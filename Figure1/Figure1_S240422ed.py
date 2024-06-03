@@ -47,22 +47,48 @@ def plot_cumulative_data(events, label, cumulative_type):
         errors = [event['error'] for event in sorted_events]
         # Convertir les distances et les erreurs en tableaux NumPy
         distances = np.array(distances)
+        print(distances)
         errors = np.array(errors)
-        # Définir les bins pour l'histogramme
-        bins = np.linspace(0, distances.max(), 30)
-        # Créer un histogramme pondéré
-        hist, bin_edges = np.histogram(distances, bins=bins, weights=errors)
-        # Calculer la distribution cumulative
-        cumulative = np.cumsum(hist)
-        # Normaliser la distribution cumulative entre 0 et 1
-        cumulative_normalized = cumulative / cumulative[-1]
-        # Tracer la distribution cumulative
-        plt.step(bin_edges[:-1], cumulative_normalized, where='mid')
-        #cumulative_distances = np.cumsum(distances)
-        #plt.errorbar(distances, cumulative_distances / cumulative_distances[-1], xerr=errors, marker='o', linestyle='-', color='k', label=label)
+        
+        print("ratio BBH with median distance below 2000 Mpc", np.where(distances<2000)[0][-1]/len(distances))
+        
+        
+        #print(np.log10(bins))
+        if label=="O4a BBH":
+            bins = np.logspace(2., 4.,9)
+            print(np.log10(bins))
+            plt.hist(distances, bins=bins,weights=errors,log=False,color="k",histtype="step",cumulative=True,density=True,label='O4a BBH alerts ' + str(int(np.round(np.median(distances/100.0), 0)*100))+' Mpc $\pm$' + str(int(np.round(np.std(distances/100), 0)*100))+" Mpc")
+        if label=="O4b BBH":
+            bins = np.logspace(2., 4.,9)
+            print(np.log10(bins))
+            plt.hist(distances, bins=bins,weights=errors,log=False,color="b",histtype="step",cumulative=True,density=True,label='O4b BBH alerts ' + str(int(np.round(np.median(distances/100.0), 0)*100))+' Mpc $\pm$' + str(int(np.round(np.std(distances/100), 0)*100))+" Mpc")
+        
+        plt.gca().set_xscale("log")
+  
         plt.legend()
         plt.xlabel("Distance (Mpc)")
         plt.ylabel("Cumulative")
+
+    if cumulative_type == "cr":
+        sorted_events = sorted(events, key=lambda event: event['cr'])
+        creg = [event['cr'] for event in sorted_events]
+        creg = np.array(creg)
+        print(creg)
+        print("ratio alerts with median credible below 500 deg2", np.where(creg<500)[0][-1]/len(creg))
+
+        if label=="O4a BBH":
+            bins = np.logspace(1., 4.,10)
+            plt.hist(creg, bins=bins,log=False,color="k",histtype="step",cumulative=False,density=True,label='O4a all alerts 90$\%$ cr ' + str(int(np.round(np.median(creg/100.0), 0)*100))+' Mpc $\pm$' + str(int(np.round(np.std(creg/100), 0)*100))+" Mpc")
+        if label=="O4b BBH":
+            bins = np.logspace(1., 4.,10)
+            print(np.log10(bins))
+            plt.hist(creg, bins=bins,log=False,color="b",histtype="step",cumulative=False,density=True,label='O4b all alerts 90$\%$ cr ' + str(int(np.round(np.median(creg/100.0), 0)*100))+' Mpc $\pm$' + str(int(np.round(np.std(creg/100), 0)*100))+" Mpc")
+        
+        plt.gca().set_xscale("log")
+  
+        plt.legend()
+        plt.xlabel("90% credible region area (square degrees)")
+        plt.ylabel("Density")
         
         
 def Weizmann_LV_O4():
@@ -71,8 +97,7 @@ def Weizmann_LV_O4():
     655718, 720188, 850152, 900717, 1003721, 1071064, 1159627, 1255576, 
     1349638, 1429984, 1570895, 1664378, 1776334, 1937252, 2112749, 2304074, 
     2477085, 2760498, 2903811, 3054626, 3213048, 3503978, 3766558, 4048651, 
-    4352047, 4991703, 5288384, 5766706, 6333940, 7369417, 8636418, 9691873, 
-    11605228, 13895055, 16877923, 16877923
+    4352047, 4991703, 5288384, 5766706, 6333940, 7369417, 8636418, 9691873
    ]
    mpc=np.array(mpc)*0.001
 
@@ -81,9 +106,10 @@ def Weizmann_LV_O4():
     0.096, 0.128, 0.149, 0.181, 0.196, 0.226, 0.262, 0.291, 0.319, 0.367, 
     0.392, 0.430, 0.469, 0.508, 0.543, 0.595, 0.634, 0.661, 0.690, 0.710, 
     0.743, 0.776, 0.802, 0.834, 0.872, 0.888, 0.909, 0.934, 0.955, 0.980, 
-    0.987, 1.000, 1.000, 0.998, 0.998
+    0.987
    ]
    plt.plot(mpc, cumulative, linestyle='-', color='r', label="LV Prospects")
+   plt.legend()
 
 # Plot data
 
@@ -267,6 +293,16 @@ events_O4NSBH = [
     {"name": "S240422ed", "distance": 188, "error": 43, "cr": 259},
 ]
 
+
+events_O4NSBHO4a = [ 
+    {"name": "S230529ay", "distance": 201, "error": 100, "cr": 24534}, #credible region in alert while distance from the paper
+    {"name": "S230627c", "distance": 291, "error": 64, "cr": 82},
+]
+
+events_O4NSBHO4b = [ 
+    {"name": "S240422ed", "distance": 188, "error": 43, "cr": 259},
+]
+
 plot_event_data(events_O4NSBH,"O4a/b","NSBH")
 
 plt.xscale('log')
@@ -285,7 +321,16 @@ plt.grid(True)
 plt.clf()
 
 
-plot_cumulative_data(events_O4a+events_O4b,"O4 BBH","distances")
+plot_cumulative_data(events_O4a,"O4a BBH","distances")
 Weizmann_LV_O4()
-plt.xscale('log')
+plot_cumulative_data(events_O4b,"O4b BBH","distances")
+#plt.xscale('log')
+plt.legend()
+plt.show()
+
+
+plot_cumulative_data(events_O4a+events_O4NSBHO4a,"O4a BBH","cr")
+plot_cumulative_data(events_O4b+events_O4NSBHO4b,"O4b BBH","cr")
+#plt.xscale('log')
+plt.legend()
 plt.show()
