@@ -155,9 +155,9 @@ plt.errorbar(
     fmt='*', capsize=5, color="r", label="NSBH: O2 (v), O3 (*)"
 )
 
-
+print(nsbh_o3_data['luminosity_distance'])
 # Annotate specific NSBH O3 events
-plt.text(nsbh_o3_data['luminosity_distance'].values[2], nsbh_o3_data['Area 90 (deg^2)'].values[2] + 120, "GW200115", color='r', fontsize=6, ha='center')
+plt.text(nsbh_o3_data['luminosity_distance'].values[1], nsbh_o3_data['Area 90 (deg^2)'].values[1] + 120, "GW200115", color='r', fontsize=6, ha='center')
 
 # O3 BNS data
 bns_o3_data = data[data['Classification'] == 'BNS']
@@ -280,7 +280,20 @@ events_O4b = [
     {"name": "S240525p", "distance": 4337, "error": 1519, "cr": 1517},
     {"name": "S240527en", "distance": 7238, "error": 2059, "cr": 1779},
     {"name": "S240527fv", "distance": 1119, "error": 188, "cr": 15},
-    {"name": "S240530a", "distance": 1229, "error": 393, "cr": 984}
+    {"name": "S240530a", "distance": 1066, "error": 226, "cr": 196},
+    {"name": "S240531bp", "distance": 3766, "error": 1491, "cr": 1323},
+    {"name": "S240601aj", "distance": 5366, "error": 2095, "cr": 2009},
+    {"name": "S240601co", "distance": 1421, "error": 390, "cr": 1110},
+    {"name": "S240615dg", "distance": 1420, "error": 236, "cr": 5},
+    {"name": "S240615ea", "distance": 3590, "error": 1058, "cr": 653},
+    {"name": "S240618ah", "distance": 5939, "error": 2437, "cr": 5116},
+    {"name": "S240621dy", "distance": 1184, "error": 199, "cr": 21},
+    {"name": "S240621eb", "distance": 4492, "error": 1407, "cr": 920},
+    {"name": "S240621em", "distance": 7458, "error": 2672, "cr": 3069},
+    {"name": "S240622h", "distance": 1350, "error": 303, "cr": 199},
+    {"name": "S240627by", "distance": 1479, "error": 420, "cr": 934},
+    {"name": "S240629by", "distance": 1173, "error": 245, "cr": 66},
+    {"name": "S240630t", "distance": 3161, "error": 841, "cr": 670}
 ]
 
 plot_event_data(events_O4b,"O4b","BBH")
@@ -314,10 +327,9 @@ plt.ylabel('y')
 plt.legend()
 plt.xlabel("Distance (Mpc)")
 plt.ylabel("90% credible region area (square degrees)")
-
-
-
 plt.grid(True)
+plt.show()
+
 plt.clf()
 
 
