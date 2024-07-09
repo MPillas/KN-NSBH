@@ -6,8 +6,9 @@ from scipy.interpolate import UnivariateSpline, interp1d
 import matplotlib.pyplot as plt
 import lal
 import lalsimulation as lalsim
-
-#from .data import PACKAGE_FILENAMES
+import sys
+sys.path.append("./data/")
+from data import PACKAGE_FILENAMES
 
 
 def compute_isco(chi_bh):
@@ -179,200 +180,201 @@ def xi_implicit(xi, kappa, chi1, eta):
 
 def computeEjectae(m1, m2, chi1, chi2, eosname='2H', mode="computeDiskMass",
                    kerr=False, R_ns=None, max_mass=None):
-    """
-    This function computes the remnant disk mass after the coalescence using
-    the equation (4) arXiv 1807.00011.
+	"""
+	This function computes the remnant disk mass after the coalescence using
+	the equation (4) arXiv 1807.00011.
 
-    and
+	and
 
-    this function computes the dynamical ejecta after the coalescence of NS-BH
-    using the equation (9) arXiv 2002.07728
+	this function computes the dynamical ejecta after the coalescence of NS-BH
+	using the equation (9) arXiv 2002.07728
 
-    Parameters
-    ----------
-    m1, m2 : array_like
-        primary and secondary mass(es)
-    chi1, chi2 : array_like
-        primary and secondary spin(s)
-    eosname : str
-        Name of the equation of state to be used. `AP4`
-        `None` when supplying `R_ns`.
-    mode : str
-        Selection of the type of ejectae computed: computeDiskMass (O1-O4a
-        calculation for HasRemnant), computeDynaEjecta (only for NSBH), both
-    kerr : bool
-        Supply to use the relativistic tidal parameter. See Fishbone (1971).
-    R_ns : float
-        Radius of the secondary in m, assuming it is a neutron star.
-    max_mass : float
-        Maximum mass of a neutron star. To be supplied if not supplying EoS.
+	Parameters
+	----------
+	m1, m2 : array_like
+		primary and secondary mass(es)
+	chi1, chi2 : array_like
+		primary and secondary spin(s)
+	eosname : str
+		Name of the equation of state to be used. `AP4`
+		`None` when supplying `R_ns`.
+	mode : str
+		Selection of the type of ejectae computed: computeDiskMass (O1-O4a
+		calculation for HasRemnant), computeDynaEjecta (only for NSBH), both
+	kerr : bool
+		Supply to use the relativistic tidal parameter. See Fishbone (1971).
+	R_ns : float
+		Radius of the secondary in m, assuming it is a neutron star.
+	max_mass : float
+		Maximum mass of a neutron star. To be supplied if not supplying EoS.
 
-    Example
-    -------
-    >>> computeEjectae(5.0, 2.0, 0.99, 0.)
-    0.6321412881595185
-    >>> m1 = np.array([5., 6., 7.])
-    >>> m2 = np.array([1.0, 1.2, 1.6])
-    >>> chi1 = np.zeros(3)
-    >>> chi2 = np.zeros(3)
-    >>> computeEjectae(m1, m2, chi1, chi2)
-    array([0.12833991, 0.05054819, 0.])
-    >>> computeEjectae(m1, m2, chi1, chi2, eosname='AP4')
-    array([0.00851525, 0., 0.])
-    >>> max_mass = 3.0  # in m_sun
-    >>> r_ns = 15000.  # in meters
-    >>> computeEjectae(m1, m2, chi1, chi2,
-    ...                 R_ns=r_ns, max_mass=max_mass)
-    array([0.12833991 0.05054819 0.])
-    >>> # m1=2.0, m2=2.0 is a BNS event assuming 2H EOS
-    >>> # DiskMass == 1.0 is a ad hoc value assigned for BNS events
-    >>> masses_spins = np.array([2.0, 2.0, 0., 0.])
-    >>> computeEjectae(masses_spins[0], masses_spins[1],
-    ...                 masses_spins[2], masses_spins[3], eosname="2H")
-    1.0
-    >>> masses_spins = np.array([5.0, 2.0, 0.99, 0.])
-    >>> computeEjectae(masses_spins[0], masses_spins[1],
-    ...                 masses_spins[2], masses_spins[3], eosname="2H")
-    0.6321412881595185
-    >>> computeEjectae(masses_spins[0], masses_spins[1],masses_spins[2],
-    ...                 masses_spins[3], mode="computeDiskMass",eosname="2H")
-    0.6321412881595185
-    >>> computeEjectae(masses_spins[0], masses_spins[1],masses_spins[2],
-    ...                 masses_spins[3], mode="computeDynaEjecta",eosname="2H")
-    0.05321543216488239
-    >>> computeEjectae(masses_spins[0], masses_spins[1],masses_spins[2],
-    ...                 masses_spins[3], mode="both",eosname="2H")
-    0.14803662538881018
+	Example
+	-------
+	>>> computeEjectae(5.0, 2.0, 0.99, 0.)
+	0.6321412881595185
+	>>> m1 = np.array([5., 6., 7.])
+	>>> m2 = np.array([1.0, 1.2, 1.6])
+	>>> chi1 = np.zeros(3)
+	>>> chi2 = np.zeros(3)
+	>>> computeEjectae(m1, m2, chi1, chi2)
+	array([0.12833991, 0.05054819, 0.])
+	>>> computeEjectae(m1, m2, chi1, chi2, eosname='AP4')
+	array([0.00851525, 0., 0.])
+	>>> max_mass = 3.0  # in m_sun
+	>>> r_ns = 15000.  # in meters
+	>>> computeEjectae(m1, m2, chi1, chi2,
+	...                 R_ns=r_ns, max_mass=max_mass)
+	array([0.12833991 0.05054819 0.])
+	>>> # m1=2.0, m2=2.0 is a BNS event assuming 2H EOS
+	>>> # DiskMass == 1.0 is a ad hoc value assigned for BNS events
+	>>> masses_spins = np.array([2.0, 2.0, 0., 0.])
+	>>> computeEjectae(masses_spins[0], masses_spins[1],
+	...                 masses_spins[2], masses_spins[3], eosname="2H")
+	1.0
+	>>> masses_spins = np.array([5.0, 2.0, 0.99, 0.])
+	>>> computeEjectae(masses_spins[0], masses_spins[1],
+	...                 masses_spins[2], masses_spins[3], eosname="2H")
+	0.6321412881595185
+	>>> computeEjectae(masses_spins[0], masses_spins[1],masses_spins[2],
+	...                 masses_spins[3], mode="computeDiskMass",eosname="2H")
+	0.6321412881595185
+	>>> computeEjectae(masses_spins[0], masses_spins[1],masses_spins[2],
+	...                 masses_spins[3], mode="computeDynaEjecta",eosname="2H")
+	0.05321543216488239
+	>>> computeEjectae(masses_spins[0], masses_spins[1],masses_spins[2],
+	...                 masses_spins[3], mode="both",eosname="2H")
+	0.14803662538881018
 
-    Notes
-    -----
-    The primary mass, by convention, is larger one. If arrays are supplied,
-    `m1`, `m2`, `chi1`, `chi1` should be of the same size.
-    """
-    try:
-        _ = iter(m1)
-        assert m1.size == m2.size == chi1.size == chi2.size, "masses and spins must have the same dimensions"
-        # Making sure that the supplied m1 >= m2 ##
-        largerMass1 = m1 >= m2
-        largerMass2 = m2 > m1
-        m_primary = np.zeros_like(m1)
-        m_secondary = np.zeros_like(m2)
-        chi_primary = np.zeros_like(chi1)
-        chi_secondary = np.zeros_like(chi2)
+	Notes
+	-----
+	The primary mass, by convention, is larger one. If arrays are supplied,
+	`m1`, `m2`, `chi1`, `chi1` should be of the same size.
+	"""
+	try:
+		_ = iter(m1)
+		assert m1.size == m2.size == chi1.size == chi2.size, "masses and spins must have the same dimensions"
+		# Making sure that the supplied m1 >= m2 ##
+		largerMass1 = m1 >= m2
+		largerMass2 = m2 > m1
+		m_primary = np.zeros_like(m1)
+		m_secondary = np.zeros_like(m2)
+		chi_primary = np.zeros_like(chi1)
+		chi_secondary = np.zeros_like(chi2)
 
-        m_primary[largerMass1] = m1[largerMass1]
-        m_primary[~largerMass1] = m2[largerMass2]
-        m_secondary[~largerMass2] = m2[~largerMass2]
-        m_secondary[largerMass2] = m1[~largerMass1]
+		m_primary[largerMass1] = m1[largerMass1]
+		m_primary[~largerMass1] = m2[largerMass2]
+		m_secondary[~largerMass2] = m2[~largerMass2]
+		m_secondary[largerMass2] = m1[~largerMass1]
 
-        chi_primary[largerMass1] = chi1[largerMass1]
-        chi_primary[~largerMass1] = chi2[~largerMass1]
-        chi_secondary[~largerMass2] = chi2[~largerMass2]
-        chi_secondary[largerMass2] = chi1[~largerMass1]
-    except TypeError:
-        if m1 >= m2:
-            m_primary = m1
-            m_secondary = m2
-            chi_primary = chi1
-            chi_secondary = chi2
-        else:
-            m_primary = m2
-            m_secondary = m1
-            chi_primary = chi2
-            chi_secondary = chi1
+		chi_primary[largerMass1] = chi1[largerMass1]
+		chi_primary[~largerMass1] = chi2[~largerMass1]
+		chi_secondary[~largerMass2] = chi2[~largerMass2]
+		chi_secondary[largerMass2] = chi1[~largerMass1]
+	except TypeError:
+		if m1 >= m2:
+			m_primary = m1
+			m_secondary = m2
+			chi_primary = chi1
+			chi_secondary = chi2
+		else:
+			m_primary = m2
+			m_secondary = m1
+			chi_primary = chi2
+			chi_secondary = chi1
 
-    [C_ns, m2_b, max_mass] = computeCompactness(m_secondary, eosname=eosname,
-                                                max_mass=max_mass)
-    #print("C_ns",np.median(C_ns), "m2_b",np.median(m2_b), "max_mass",max_mass)
+	[C_ns, m2_b, max_mass] = computeCompactness(m_secondary, eosname=eosname,
+			                                    max_mass=max_mass)
+	#print("C_ns",np.median(C_ns), "m2_b",np.median(m2_b), "max_mass",max_mass)
+	eta = m_primary * m_secondary / (m_primary + m_secondary)**2
+	BBH = m_secondary > max_mass
+	BNS = m_primary < max_mass
+	if not isinstance(BNS, np.ndarray):
+		if BNS or BBH:
+			return float(not BBH or BNS)
 
-    eta = m_primary * m_secondary / (m_primary + m_secondary)**2
-    BBH = m_secondary > max_mass
-    BNS = m_primary < max_mass
-    if not isinstance(BNS, np.ndarray):
-        if BNS or BBH:
-            return float(not BBH or BNS)
+	if mode == "computeDiskMass" or mode == "both":
+		if not kerr:
+			alpha = 0.406
+			beta = 0.139
+			gamma = 0.255
+			delta = 1.761
+			firstTerm = alpha * (1 - 2 * C_ns) / (eta**(1 / 3))
+			secondTerm = beta * compute_isco(chi1) * C_ns / eta
+			thirdTerm = gamma
+		else:
+			alpha = 0.24037857
+			beta = 0.15184471
+			gamma = 0.35607169
+			delta = 1.81491784
+			kappa = (m_primary / m_secondary) * C_ns
+			try:
+			    Num = len(kappa)
+			    xi = fsolve(xi_implicit, 100 * np.ones(Num),
+			                args=(kappa, chi1, eta))
+			except TypeError:
+			    xi = fsolve(xi_implicit, 100, args=(kappa, chi1, eta))
 
-    if mode == "computeDiskMass" or mode == "both":
-        if not kerr:
-            alpha = 0.406
-            beta = 0.139
-            gamma = 0.255
-            delta = 1.761
-            firstTerm = alpha * (1 - 2 * C_ns) / (eta**(1 / 3))
-            secondTerm = beta * compute_isco(chi1) * C_ns / eta
-            thirdTerm = gamma
-        else:
-            alpha = 0.24037857
-            beta = 0.15184471
-            gamma = 0.35607169
-            delta = 1.81491784
-            kappa = (m_primary / m_secondary) * C_ns
-            try:
-                Num = len(kappa)
-                xi = fsolve(xi_implicit, 100 * np.ones(Num),
-                            args=(kappa, chi1, eta))
-            except TypeError:
-                xi = fsolve(xi_implicit, 100, args=(kappa, chi1, eta))
+			firstTerm = alpha * xi * (1 - 2 * C_ns)
+			secondTerm = beta * compute_isco(chi1) * C_ns / eta
+			thirdTerm = gamma
 
-            firstTerm = alpha * xi * (1 - 2 * C_ns)
-            secondTerm = beta * compute_isco(chi1) * C_ns / eta
-            thirdTerm = gamma
+		combinedTerms = firstTerm - secondTerm + thirdTerm
 
-        combinedTerms = firstTerm - secondTerm + thirdTerm
+		if hasattr(combinedTerms, 'ndim') and combinedTerms.ndim >= 1:
+			lessthanzero = combinedTerms < 0.0
+			combinedTerms[lessthanzero] = 0.0
+		else:
+			combinedTerms = 0 if combinedTerms < 0 else combinedTerms
+		M_rem_disk = (combinedTerms**delta) * m2_b
 
-        if hasattr(combinedTerms, 'ndim') and combinedTerms.ndim >= 1:
-            lessthanzero = combinedTerms < 0.0
-            combinedTerms[lessthanzero] = 0.0
-        else:
-            combinedTerms = 0 if combinedTerms < 0 else combinedTerms
-        M_rem_disk = (combinedTerms**delta) * m2_b
-
-    if mode == "computeDynaEjecta" or mode == "both":
-        a1 = 7.11595154E-03
-        a2 = 1.43636803E-03
-        a4 = -2.76202990E-02
-        n1 = 8.63604211E-01
-        n2= 1.68399507
+	if mode == "computeDynaEjecta" or mode == "both":
+		a1 = 7.11595154E-03
+		a2 = 1.43636803E-03
+		a4 = -2.76202990E-02
+		n1 = 8.63604211E-01
+		n2= 1.68399507
 
 
-        Q = m1 / m2
-        #chi_eff=spins_to_chi_eff(m1, m2, chi1, chi2)
-        firstTerm = a1 * np.power(Q, n1) * (1.0 - 2.0 * C_ns) / C_ns
-        secondTerm = -a2*np.power(Q,n2)*compute_isco(chi1) #normalized by the m1 BH
-        thirdTerm = a4
-        #print(firstTerm* m2_b,secondTerm* m2_b,thirdTerm * m2_b)
-        combinedTerms = firstTerm + secondTerm + thirdTerm
+		Q = m1 / m2
+		#chi_eff=spins_to_chi_eff(m1, m2, chi1, chi2)
+		firstTerm = a1 * np.power(Q, n1) * (1.0 - 2.0 * C_ns) / C_ns
+		secondTerm = -a2*np.power(Q,n2)*compute_isco(chi1) #normalized by the m1 BH
+		thirdTerm = a4
+		#print(firstTerm* m2_b,secondTerm* m2_b,thirdTerm * m2_b)
+		combinedTerms = firstTerm + secondTerm + thirdTerm
 
-        if hasattr(combinedTerms, 'ndim') and combinedTerms.ndim >= 1:
-            lessthanzero = combinedTerms < 0.0
-            combinedTerms[lessthanzero] = 0.0
-        else:
-            combinedTerms = 0 if combinedTerms < 0 else combinedTerms
+		if hasattr(combinedTerms, 'ndim') and combinedTerms.ndim >= 1:
+			lessthanzero = combinedTerms < 0.0
+			combinedTerms[lessthanzero] = 0.0
+		else:
+			combinedTerms = 0 if combinedTerms < 0 else combinedTerms
 
-        M_rem_dyn = combinedTerms * m2_b
+		M_rem_dyn = combinedTerms * m2_b
 
-    # Computation of the total ejecta based on the sum of contributions
-    # from the disk wind and dynamical ejecta component with an
-    # arbitrary zeta = 0.15 (Fernandez (2014), Siegel and Metzger
-    # 2018
+	# Computation of the total ejecta based on the sum of contributions
+	# from the disk wind and dynamical ejecta component with an
+	# arbitrary zeta = 0.15 (Fernandez (2014), Siegel and Metzger
+	# 2018
 
-    if mode == "both":
-    	zeta_upper, zeta_upper=zeta_diskejecta(Q)
-    	#print(np.round(zeta_lower,2))
-    	M_rem = M_rem_dyn + zeta_upper * M_rem_disk
+	if mode == "both":
+		zeta_lower, zeta_upper=zeta_diskejecta(Q)
+		zeta=(zeta_lower+zeta_upper)/2.0
+		zeta=0.3
+		M_rem = M_rem_dyn + zeta * M_rem_disk
 
-    if mode == "computeDynaEjecta":
-        M_rem = M_rem_dyn
+	if mode == "computeDynaEjecta":
+		M_rem = M_rem_dyn
 
-    if mode == "computeDiskMass":
-    	Q = m1 / m2
-    	zeta_lower, zeta_upper=zeta_diskejecta(Q)
-    	M_rem = zeta_lower*M_rem_disk
+	if mode == "computeDiskMass":
+		Q = m1 / m2
+		zeta_lower, zeta_upper=zeta_diskejecta(Q)
+		zeta=(zeta_lower+zeta_upper)/2.0
+		zeta=0.3
+		M_rem = zeta*M_rem_disk
 
-    """
-    if isinstance(BNS, np.ndarray):
-        M_rem[BBH] = 0.0  # BBH is always EM-Dark
-        M_rem[BNS] = 1.0  # Ad hoc value, assuming BNS is always EM-Bright
-    """
-
-    return M_rem
+	"""
+	if isinstance(BNS, np.ndarray):
+		M_rem[BBH] = 0.0  # BBH is always EM-Dark
+		M_rem[BNS] = 1.0  # Ad hoc value, assuming BNS is always EM-Bright
+	"""
+	return M_rem, np.median(C_ns), np.median(compute_isco(chi1))
