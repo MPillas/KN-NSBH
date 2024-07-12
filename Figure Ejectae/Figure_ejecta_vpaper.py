@@ -202,7 +202,7 @@ mchirp_cut=2.1
 #fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
 fig, axs = plt.subplots(3, 4, figsize=(18, 18))
 
-fig.suptitle('Dynamical Ejecta (top), Wind Ejecta (middle), and Total (bottom),  for EOS :'+str(EOS)+" given xi=0.3", fontsize=20)
+fig.suptitle('Dynamical Ejecta (top), Wind Ejecta (middle), and Total (bottom),  for EOS :'+str(EOS)+" given xi varies", fontsize=20)
 
 #axs[0, 1].set_title('Dynamical ejecta')
 

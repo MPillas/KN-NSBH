@@ -327,7 +327,7 @@ def computeEjectae(m1, m2, chi1, chi2, eosname='2H', mode="computeDiskMass",
 			combinedTerms = 0 if combinedTerms < 0 else combinedTerms
 		M_rem_disk = (combinedTerms**delta) * m2_b
 
-	if mode == "computeDynaEjecta" or mode == "both":
+	if mode == "computeDynaEjecta" or mode == "both" or "computeDiskMass":
 		a1 = 7.11595154E-03
 		a2 = 1.43636803E-03
 		a4 = -2.76202990E-02
@@ -359,8 +359,10 @@ def computeEjectae(m1, m2, chi1, chi2, eosname='2H', mode="computeDiskMass",
 	if mode == "both":
 		zeta_lower, zeta_upper=zeta_diskejecta(Q)
 		zeta=(zeta_lower+zeta_upper)/2.0
-		zeta=0.3
-		M_rem = M_rem_dyn + zeta * M_rem_disk
+		#zeta=0.3
+		if M_rem_dyn < 0:
+			M_rem_dyn=0.0
+		M_rem = M_rem_dyn + zeta * (M_rem_disk-M_rem_dyn)
 
 	if mode == "computeDynaEjecta":
 		M_rem = M_rem_dyn
@@ -369,8 +371,14 @@ def computeEjectae(m1, m2, chi1, chi2, eosname='2H', mode="computeDiskMass",
 		Q = m1 / m2
 		zeta_lower, zeta_upper=zeta_diskejecta(Q)
 		zeta=(zeta_lower+zeta_upper)/2.0
-		zeta=0.3
-		M_rem = zeta*M_rem_disk
+		#zeta=0.3
+		#M_rem = zeta*M_rem_disk
+		#Computation of the contribution of the wind
+		if m2 <= 1.3 and m1 <= 2.1 and chi1==0.8:
+			print(np.round(M_rem_dyn,3),np.round(M_rem_disk,3),zeta,M_rem_disk-M_rem_dyn)
+		if M_rem_dyn < 0:
+			M_rem_dyn=0.0
+		M_rem = zeta * (M_rem_disk-M_rem_dyn)
 
 	"""
 	if isinstance(BNS, np.ndarray):
